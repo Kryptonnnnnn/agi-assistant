@@ -1,0 +1,80 @@
+# AGI Assistant .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Data files (recordings - too large!)
+data/clips/*.png
+data/clips/*.wav
+data/clips/*.mp4
+data/json/session_summary_*.json
+data/workflows/workflow_*.json
+data/learning_database.json
+
+# Keep directory structure
+!data/clips/.gitkeep
+!data/json/.gitkeep
+!data/workflows/.gitkeep
+
+# Models (Large files)
+*.pth
+*.bin
+*.pt
+models/
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Flask
+instance/
+.webassets-cache
+
+# Environment
+.env
+.env.local
+
+# Large videos (upload separately)
+demo_video.mp4
+*.mp4

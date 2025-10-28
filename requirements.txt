@@ -1,0 +1,36 @@
+opencv-python
+pyaudio
+numpy
+pillow
+torch
+transformers
+
+# AGI Assistant - Python Dependencies
+
+# Core dependencies
+pillow
+numpy
+opencv-python
+
+# Screen capture
+mss
+pyautogui
+
+# Audio recording and processing
+sounddevice
+soundfile
+scipy
+
+# Speech-to-Text (Whisper)
+openai-whisper
+torch
+torchaudio
+
+# OCR (Tesseract)
+pytesseract
+
+# LLM support
+requests
+
+# Utilities
+python-dateutil
