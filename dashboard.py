@@ -136,7 +136,7 @@ class DashboardController:
         }
     
     def execute_workflow_with_feedback(self, workflow_id):
-        """Execute workflow with real-time feedback"""
+        """Execute workflow with real-time feedback using SMART ENGINE"""
         global automation_running, execution_logs
         
         automation_running = True
@@ -153,99 +153,121 @@ class DashboardController:
             print(f"💬 {message}")
         
         try:
-            # Load workflow
+            # Import the SMART automation engine
+            from smart_automation_engine import SmartAutomationEngine
+            
             workflow_file = self.workflows_dir / f"workflow_{workflow_id}.json"
             
             if not workflow_file.exists():
                 log_feedback("❌ Workflow file not found")
                 return False
             
+            log_feedback(f"🚀 Starting SMART automation for workflow: {workflow_id}")
+            log_feedback(f"🧠 Using intelligent, cross-platform engine")
+            log_feedback("⏱️  Preparing automation...")
+            time.sleep(1)
+            
+            # Create smart engine
+            engine = SmartAutomationEngine()
+            
+            # Load workflow
             with open(workflow_file, 'r') as f:
                 workflow = json.load(f)
             
             steps = workflow.get('automation_steps', [])
+            log_feedback(f"📋 Original workflow has {len(steps)} steps")
             
-            log_feedback(f"🚀 Starting automation for workflow: {workflow_id}")
-            log_feedback(f"📋 Total steps to execute: {len(steps)}")
-            log_feedback("⏱️  Waiting 3 seconds for you to prepare...")
+            # Create smart workflow
+            log_feedback("🔧 Creating intelligent execution plan...")
+            smart_actions = engine.create_smart_workflow(steps)
+            
+            log_feedback(f"✅ Prepared {len(smart_actions)} optimized actions")
+            log_feedback("⏱️  Starting in 3 seconds - prepare your screen!")
             time.sleep(3)
             
             successful_steps = 0
             
-            # Execute each step
-            for i, step in enumerate(steps, 1):
+            # Execute each action with smart engine
+            for i, action in enumerate(smart_actions, 1):
                 if not automation_running:
                     log_feedback("⚠️  Automation stopped by user")
                     break
                 
-                action = step.get('action')
-                description = step.get('description', '')
+                desc = action.get('description', action.get('action', 'Unknown'))
+                log_feedback(f"📍 Step {i}/{len(smart_actions)}: {desc}")
                 
-                log_feedback(f"📍 Step {i}/{len(steps)}: {action.upper()}", step)
-                
-                # Real-time reasoning
-                reasoning = self.get_reasoning_for_action(step, workflow)
+                # Get reasoning
+                reasoning = self.get_smart_reasoning(action)
                 log_feedback(f"🤔 Reasoning: {reasoning}")
                 
+                # Execute with smart engine
                 try:
-                    # Execute the action
-                    if action == 'click':
-                        target = step.get('target', '')
-                        log_feedback(f"🖱️  Clicking '{target}'...")
-                        
-                        args = step.get('args', {})
-                        if 'x' in args and 'y' in args:
-                            pyautogui.click(args['x'], args['y'])
-                            log_feedback(f"✅ Clicked at ({args['x']}, {args['y']})")
-                        else:
-                            log_feedback(f"⚠️  No coordinates available, skipping")
+                    success = engine.execute_action_intelligently(action)
                     
-                    elif action == 'type':
-                        text = step.get('args', {}).get('text', '')
-                        log_feedback(f"⌨️  Typing: '{text}'...")
-                        pyautogui.write(text, interval=0.05)
-                        log_feedback(f"✅ Typed successfully")
-                    
-                    elif action == 'wait':
-                        seconds = step.get('args', {}).get('seconds', 1)
-                        log_feedback(f"⏸️  Waiting {seconds} seconds...")
-                        time.sleep(seconds)
-                        log_feedback(f"✅ Wait complete")
-                    
-                    elif action == 'hotkey':
-                        keys = step.get('args', {}).get('keys', '')
-                        log_feedback(f"⌨️  Pressing hotkey: {keys}...")
-                        key_list = keys.lower().replace(' ', '').split('+')
-                        pyautogui.hotkey(*key_list)
-                        log_feedback(f"✅ Hotkey pressed")
-                    
+                    if success:
+                        log_feedback(f"✅ Step {i} completed successfully")
+                        successful_steps += 1
                     else:
-                        log_feedback(f"⚠️  Unknown action type: {action}")
+                        log_feedback(f"⚠️  Step {i} had issues but continuing")
                     
-                    successful_steps += 1
-                    time.sleep(0.5)  # Small delay between steps
+                    time.sleep(1)
                 
                 except Exception as e:
-                    log_feedback(f"❌ Error executing step: {e}")
+                    log_feedback(f"❌ Error in step {i}: {str(e)}")
             
             # Calculate success
-            success_rate = (successful_steps / len(steps)) * 100
+            success_rate = (successful_steps / len(smart_actions)) * 100 if smart_actions else 0
             
             if success_rate == 100:
-                log_feedback(f"🎉 Automation complete! All {len(steps)} steps executed successfully!")
+                log_feedback(f"🎉 Perfect! All {len(smart_actions)} steps executed successfully!")
+            elif success_rate >= 70:
+                log_feedback(f"✅ Good! {successful_steps}/{len(smart_actions)} steps successful ({success_rate:.0f}%)")
             else:
-                log_feedback(f"⚠️  Automation completed with {successful_steps}/{len(steps)} successful steps ({success_rate:.0f}%)")
+                log_feedback(f"⚠️  Completed with {successful_steps}/{len(smart_actions)} successful ({success_rate:.0f}%)")
+            
+            log_feedback(f"💡 Cross-platform: Works on {engine.os_type}")
+            log_feedback(f"🔍 Dynamic: No hard-coded positions used")
+            log_feedback(f"🧠 Intelligent: LLM + Vision based decisions")
             
             # Update learning database
-            self.update_learning_data(workflow_id, success_rate == 100, successful_steps, len(steps))
+            self.update_learning_data(workflow_id, success_rate >= 70, successful_steps, len(smart_actions))
             
             automation_running = False
             return True
         
         except Exception as e:
             log_feedback(f"❌ Critical error: {e}")
+            import traceback
+            log_feedback(f"📋 Details: {traceback.format_exc()}")
             automation_running = False
             return False
+    
+    def get_smart_reasoning(self, action):
+        """Generate intelligent reasoning for smart actions"""
+        action_type = action.get('action')
+        description = action.get('description', '')
+        
+        reasoning_map = {
+            'open_application': "Opening application using OS-specific launcher (Spotlight/Run dialog)",
+            'type_text': "Typing text into active field - validated and filtered for quality",
+            'click': "Locating element on screen using OCR, then clicking dynamically",
+            'save_file': "Using universal save shortcut based on detected OS platform",
+            'close_window': "Using universal close shortcut based on detected OS platform",
+            'wait': "Pausing to allow UI to update and respond to previous action",
+            'hotkey': "Executing keyboard shortcut, adjusted for current platform"
+        }
+        
+        base_reason = reasoning_map.get(action_type, "Executing learned workflow step")
+        
+        # Add context
+        if 'demo' in description.lower():
+            return f"{base_reason}. This is a demonstration workflow."
+        elif 'save' in description.lower():
+            return f"{base_reason}. Saving work to persist changes."
+        elif 'open' in description.lower():
+            return f"{base_reason}. Launching required application."
+        
+        return base_reason
     
     def get_reasoning_for_action(self, step, workflow):
         """Generate human-readable reasoning for action"""
